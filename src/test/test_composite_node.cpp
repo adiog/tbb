@@ -1,27 +1,28 @@
 /*
-    Copyright 2005-2016 Intel Corporation.  All Rights Reserved.
+    Copyright (c) 2005-2017 Intel Corporation
 
-    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
-    you can redistribute it and/or modify it under the terms of the GNU General Public License
-    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
-    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See  the GNU General Public License for more details.   You should have received a copy of
-    the  GNU General Public License along with Threading Building Blocks; if not, write to the
-    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    As a special exception,  you may use this file  as part of a free software library without
-    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
-    functions from this file, or you compile this file and link it with other files to produce
-    an executable,  this file does not by itself cause the resulting executable to be covered
-    by the GNU General Public License. This exception does not however invalidate any other
-    reasons why the executable file might be covered by the GNU General Public License.
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+
+
 */
 
 #include "harness.h"
 #if __TBB_FLOW_GRAPH_CPP11_FEATURES
 
 #include "tbb/flow_graph.h"
+#include "harness_graph.h"
 #include <tuple>
 #include <cmath>
 #include <vector>
@@ -114,20 +115,20 @@ void add_all_nodes (){
     tbb::flow::overwrite_node<int> ovw(g);
     tbb::flow::sequencer_node<int> seq(g, seq_body());
 
-    #if !(__GNUC__==4 && __GNUC_MINOR__==4  && !defined(__clang__))
-    // upcasting of a tuple of reference from derived to base fails on gcc4.4 (and all icc in this environment)
-    // if std::tie is used to create the tuple of references
+#if !__TBB_UPCAST_OF_TUPLE_OF_REF_BROKEN
     auto input_tuple = std::tie(ct, s, m_fxn, fxn, bc, tbb::flow::input_port<0>(j), lim, q, tbb::flow::input_port<0>(ind),
                                 pq, ovw, wo, bf, seq);
     auto output_tuple = std::tie(ct,j, ind, fxn, src, bc, tbb::flow::output_port<0>(s), lim, tbb::flow::output_port<0>(m_fxn),
                                  q, pq, ovw, wo, bf, seq );
-    #else
+#else
+    // upcasting from derived to base for a tuple of references created by std::tie
+    // fails on gcc 4.4 (and all icc in that environment)
     input_output_type::input_ports_type input_tuple(ct, s, m_fxn, fxn, bc, tbb::flow::input_port<0>(j), lim, q,
                                                     tbb::flow::input_port<0>(ind), pq, ovw, wo, bf, seq);
 
     input_output_type::output_ports_type output_tuple(ct,j, ind, fxn, src, bc, tbb::flow::output_port<0>(s),
                                                       lim, tbb::flow::output_port<0>(m_fxn), q, pq, ovw, wo, bf, seq);
-    #endif
+#endif
 
     //composite_node with both input_ports and output_ports
     input_output_type a_node(g);
@@ -199,6 +200,9 @@ int test_tiny(bool hidden = false) {
     tiny_node t1(g, hidden);
     ASSERT(&tbb::flow::get<0>(t1.input_ports()) == &t1.f1, "f1 not bound to input port 0 in composite_node t1");
     ASSERT(&tbb::flow::get<0>(t1.output_ports()) == &t1.f2, "f2 not bound to output port 0 in composite_node t1");
+
+    test_input_ports_return_ref(t1);
+    test_output_ports_return_ref(t1);
 
     tiny_node t2(g, hidden);
     ASSERT(&tbb::flow::input_port<0>(t2) == &t2.f1, "f1 not bound to input port 0 in composite_node t2");

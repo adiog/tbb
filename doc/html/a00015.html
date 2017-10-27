@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.4"/>
-<title>tbb::aligned_space&lt; T, N &gt; Class Template Reference</title>
+<title>tbb::flow::interface10::internal::async_helpers&lt; T, typename &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -33,47 +33,60 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="a00237.html">tbb</a></li><li class="navelem"><a class="el" href="a00015.html">aligned_space</a></li>  </ul>
+<li class="navelem"><a class="el" href="a00237.html">tbb</a></li><li class="navelem"><b>flow</b></li><li class="navelem"><b>interface10</b></li><li class="navelem"><b>internal</b></li><li class="navelem"><a class="el" href="a00015.html">async_helpers</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="a00261.html">List of all members</a>  </div>
+<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="a00350.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">tbb::aligned_space&lt; T, N &gt; Class Template Reference<div class="ingroups"><a class="el" href="a00254.html">Memory Allocation</a></div></div>  </div>
+<div class="title">tbb::flow::interface10::internal::async_helpers&lt; T, typename &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Block of space aligned sufficiently to construct an array T with N elements.  
- <a href="a00015.html#details">More...</a></p>
-
-<p><code>#include &lt;aligned_space.h&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:a3525dbbac0d4eaedfe18bc57b7760857"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3525dbbac0d4eaedfe18bc57b7760857"></a>
-T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00015.html#a3525dbbac0d4eaedfe18bc57b7760857">begin</a> ()</td></tr>
-<tr class="memdesc:a3525dbbac0d4eaedfe18bc57b7760857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to beginning of array. <br/></td></tr>
-<tr class="separator:a3525dbbac0d4eaedfe18bc57b7760857"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae95620e1159984a2670bd418ed4748d0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae95620e1159984a2670bd418ed4748d0"></a>
-T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00015.html#ae95620e1159984a2670bd418ed4748d0">end</a> ()</td></tr>
-<tr class="memdesc:ae95620e1159984a2670bd418ed4748d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to one past last element in array. <br/></td></tr>
-<tr class="separator:ae95620e1159984a2670bd418ed4748d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a9a483310f1b2e6cfd952906124a09ebb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a483310f1b2e6cfd952906124a09ebb"></a>
+typedef <a class="el" href="a00017.html">async_msg</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>async_type</b></td></tr>
+<tr class="separator:a9a483310f1b2e6cfd952906124a09ebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcefe402ace161e17c974ae2dd3b458a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abcefe402ace161e17c974ae2dd3b458a"></a>
+typedef T&#160;</td><td class="memItemRight" valign="bottom"><b>filtered_type</b></td></tr>
+<tr class="separator:abcefe402ace161e17c974ae2dd3b458a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a2236321141eea81b8367f8786f62c656"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2236321141eea81b8367f8786f62c656"></a>
+static const void *&#160;</td><td class="memItemRight" valign="bottom"><b>to_void_ptr</b> (const T &amp;t)</td></tr>
+<tr class="separator:a2236321141eea81b8367f8786f62c656"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4b81efe81c177c1fb61142c1655a340"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4b81efe81c177c1fb61142c1655a340"></a>
+static void *&#160;</td><td class="memItemRight" valign="bottom"><b>to_void_ptr</b> (T &amp;t)</td></tr>
+<tr class="separator:ac4b81efe81c177c1fb61142c1655a340"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac43a4547e19a30fb2156eb7e59f22c61"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac43a4547e19a30fb2156eb7e59f22c61"></a>
+static const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>from_void_ptr</b> (const void *p)</td></tr>
+<tr class="separator:ac43a4547e19a30fb2156eb7e59f22c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70bb7b481e7b4786edf07881b7114b09"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70bb7b481e7b4786edf07881b7114b09"></a>
+static T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>from_void_ptr</b> (void *p)</td></tr>
+<tr class="separator:a70bb7b481e7b4786edf07881b7114b09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8737716155b1acede28ae85dc00edaef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8737716155b1acede28ae85dc00edaef"></a>
+static task *&#160;</td><td class="memItemRight" valign="bottom"><b>try_put_task_wrapper_impl</b> (<a class="el" href="a00122.html">receiver</a>&lt; T &gt; *const this_recv, const void *p, bool is_async)</td></tr>
+<tr class="separator:a8737716155b1acede28ae85dc00edaef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a77c7b633889eff6fbf768a09515c8cfe"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77c7b633889eff6fbf768a09515c8cfe"></a>
+static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_async_type</b> = false</td></tr>
+<tr class="separator:a77c7b633889eff6fbf768a09515c8cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T, size_t N = 1&gt;<br/>
-class tbb::aligned_space&lt; T, N &gt;</h3>
-
-<p>Block of space aligned sufficiently to construct an array T with N elements. </p>
-<p>The elements are not constructed or destroyed by this class. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>aligned_space.h</li>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="a00191.html">flow_graph.h</a></li>
 </ul>
 </div><!-- contents -->
 <hr>
 <p></p>
-Copyright &copy; 2005-2016 Intel Corporation.  All Rights Reserved.
+Copyright &copy; 2005-2017 Intel Corporation.  All Rights Reserved.
 <p></p>
 Intel, Pentium, Intel Xeon, Itanium, Intel XScale and VTune are
 registered trademarks or trademarks of Intel Corporation or its

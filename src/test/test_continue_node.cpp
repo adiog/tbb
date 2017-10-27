@@ -1,25 +1,26 @@
 /*
-    Copyright 2005-2016 Intel Corporation.  All Rights Reserved.
+    Copyright (c) 2005-2017 Intel Corporation
 
-    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
-    you can redistribute it and/or modify it under the terms of the GNU General Public License
-    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
-    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See  the GNU General Public License for more details.   You should have received a copy of
-    the  GNU General Public License along with Threading Building Blocks; if not, write to the
-    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    As a special exception,  you may use this file  as part of a free software library without
-    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
-    functions from this file, or you compile this file and link it with other files to produce
-    an executable,  this file does not by itself cause the resulting executable to be covered
-    by the GNU General Public License. This exception does not however invalidate any other
-    reasons why the executable file might be covered by the GNU General Public License.
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+
+
 */
 
 #include "harness_graph.h"
 
+#include "tbb/flow_graph.h"
 #include "tbb/task_scheduler_init.h"
 
 #define N 1000
@@ -37,17 +38,16 @@ struct fake_continue_sender : public tbb::flow::sender<tbb::flow::continue_msg>
 {
     typedef tbb::flow::sender<tbb::flow::continue_msg>::successor_type successor_type;
     // Define implementations of virtual methods that are abstract in the base class
-    /*override*/ bool register_successor( successor_type& ) { return false; }
-    /*override*/ bool remove_successor( successor_type& )   { return false; }
+    bool register_successor( successor_type& ) __TBB_override { return false; }
+    bool remove_successor( successor_type& )   __TBB_override { return false; }
 #if TBB_PREVIEW_FLOW_GRAPH_FEATURES
     typedef tbb::flow::sender<tbb::flow::continue_msg>::built_successors_type built_successors_type;
     built_successors_type bst;
-    /*override*/ built_successors_type &built_successors() { return bst; }
-    /*override*/void internal_add_built_successor( successor_type &) { }
-    /*override*/void internal_delete_built_successor( successor_type &) { }
-    /*override*/void copy_successors(successor_list_type &) {}
-    /*override*/void clear_successors() {}
-    /*override*/size_t successor_count() {return 0;}
+    built_successors_type &built_successors() __TBB_override { return bst; }
+    void internal_add_built_successor( successor_type &) __TBB_override { }
+    void internal_delete_built_successor( successor_type &) __TBB_override { }
+    void copy_successors(successor_list_type &) __TBB_override {}
+    size_t successor_count() __TBB_override {return 0;}
 #endif
 };
 
@@ -75,7 +75,7 @@ void run_continue_nodes( int p, tbb::flow::graph& g, tbb::flow::continue_node< O
     }
 
     for (size_t num_receivers = 1; num_receivers <= MAX_NODES; ++num_receivers ) {
-        harness_counting_receiver<OutputType> *receivers = new harness_counting_receiver<OutputType>[num_receivers];
+        std::vector< harness_counting_receiver<OutputType> > receivers(num_receivers, harness_counting_receiver<OutputType>(g));
         harness_graph_executor<tbb::flow::continue_msg, OutputType>::execute_count = 0;
 
         for (size_t r = 0; r < num_receivers; ++r ) {
@@ -161,7 +161,7 @@ void continue_nodes_with_copy( ) {
         }
 
         for (size_t num_receivers = 1; num_receivers <= MAX_NODES; ++num_receivers ) {
-            harness_counting_receiver<OutputType> *receivers = new harness_counting_receiver<OutputType>[num_receivers];
+            std::vector< harness_counting_receiver<OutputType> > receivers(num_receivers, harness_counting_receiver<OutputType>(g));
 
             for (size_t r = 0; r < num_receivers; ++r ) {
                 tbb::flow::make_edge( exe_node, receivers[r] );
@@ -175,6 +175,9 @@ void continue_nodes_with_copy( ) {
                 size_t c = receivers[r].my_count;
                 // 3) the nodes will send to multiple successors.
                 ASSERT( (int)c == p, NULL );
+            }
+            for (size_t r = 0; r < num_receivers; ++r ) {
+                tbb::flow::remove_edge( exe_node, receivers[r] );
             }
         }
 
@@ -195,7 +198,7 @@ void continue_nodes_with_copy( ) {
 template< typename OutputType >
 void run_continue_nodes() {
     harness_graph_executor< tbb::flow::continue_msg, OutputType>::max_executors = 0;
-    #if __TBB_LAMBDAS_PRESENT
+    #if __TBB_CPP11_LAMBDAS_PRESENT
     continue_nodes<OutputType>( []( tbb::flow::continue_msg i ) -> OutputType { return harness_graph_executor<tbb::flow::continue_msg, OutputType>::func(i); } );
     #endif
     continue_nodes<OutputType>( &harness_graph_executor<tbb::flow::continue_msg, OutputType>::func );

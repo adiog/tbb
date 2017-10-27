@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.4"/>
-<title>tbb::flow::interface8::sender&lt; dependency_msg&lt; T, Factory &gt; &gt; Class Template Reference</title>
+<title>tbb::spin_rw_mutex_v3 Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -33,74 +33,201 @@
   </div>
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="a00237.html">tbb</a></li><li class="navelem"><b>flow</b></li><li class="navelem"><b>interface8</b></li><li class="navelem"><a class="el" href="a00144.html">sender< dependency_msg< T, Factory > ></a></li>  </ul>
+<li class="navelem"><a class="el" href="a00237.html">tbb</a></li><li class="navelem"><a class="el" href="a00144.html">spin_rw_mutex_v3</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="a00333.html">List of all members</a>  </div>
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
+<a href="a00304.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">tbb::flow::interface8::sender&lt; dependency_msg&lt; T, Factory &gt; &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">tbb::spin_rw_mutex_v3 Class Reference<div class="ingroups"><a class="el" href="a00260.html">Synchronization</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Fast, unfair, spinning reader-writer lock with backoff and writer-preference.  
+ <a href="a00144.html#details">More...</a></p>
+
+<p><code>#include &lt;spin_rw_mutex.h&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for tbb::flow::interface8::sender&lt; dependency_msg&lt; T, Factory &gt; &gt;:</div>
+Inheritance diagram for tbb::spin_rw_mutex_v3:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="a00144.png" usemap="#tbb::flow::interface8::sender&lt; dependency_msg&lt; T, Factory &gt; &gt;_map" alt=""/>
-  <map id="tbb::flow::interface8::sender&lt; dependency_msg&lt; T, Factory &gt; &gt;_map" name="tbb::flow::interface8::sender&lt; dependency_msg&lt; T, Factory &gt; &gt;_map">
-<area href="a00109.html" alt="tbb::flow::interface8::proxy_dependency_sender&lt; T, Factory &gt;" shape="rect" coords="0,56,373,80"/>
+  <img src="a00144.png" usemap="#tbb::spin_rw_mutex_v3_map" alt=""/>
+  <map id="tbb::spin_rw_mutex_v3_map" name="tbb::spin_rw_mutex_v3_map">
 </map>
  </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:a6916f2f7f9862f9afe9b718e93b0b68b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6916f2f7f9862f9afe9b718e93b0b68b"></a>
-typedef <a class="el" href="a00123.html">receiver</a><br class="typebreak"/>
-&lt; <a class="el" href="a00054.html">dependency_msg</a>&lt; T, Factory &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#a6916f2f7f9862f9afe9b718e93b0b68b">successor_type</a></td></tr>
-<tr class="memdesc:a6916f2f7f9862f9afe9b718e93b0b68b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The successor type for this sender. <br/></td></tr>
-<tr class="separator:a6916f2f7f9862f9afe9b718e93b0b68b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fb8a0afda62e103046a8d008adc7492"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6fb8a0afda62e103046a8d008adc7492"></a>
-typedef <br class="typebreak"/>
-<a class="el" href="a00109.html">proxy_dependency_sender</a>&lt; T, <br class="typebreak"/>
-Factory &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>proxy</b></td></tr>
-<tr class="separator:a6fb8a0afda62e103046a8d008adc7492"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00139.html">scoped_lock</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The scoped locking pattern.  <a href="a00139.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a207d2e4c50f8c2635cad79017ae918a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a207d2e4c50f8c2635cad79017ae918a6"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#a207d2e4c50f8c2635cad79017ae918a6">register_successor</a> (<a class="el" href="a00144.html#a6916f2f7f9862f9afe9b718e93b0b68b">successor_type</a> &amp;r)=0</td></tr>
-<tr class="memdesc:a207d2e4c50f8c2635cad79017ae918a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new successor to this node. <br/></td></tr>
-<tr class="separator:a207d2e4c50f8c2635cad79017ae918a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0320923715b9e0d98ce9d103c08a65b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0320923715b9e0d98ce9d103c08a65b9"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#a0320923715b9e0d98ce9d103c08a65b9">remove_successor</a> (<a class="el" href="a00144.html#a6916f2f7f9862f9afe9b718e93b0b68b">successor_type</a> &amp;r)=0</td></tr>
-<tr class="memdesc:a0320923715b9e0d98ce9d103c08a65b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a successor from this node. <br/></td></tr>
-<tr class="separator:a0320923715b9e0d98ce9d103c08a65b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb6486b9ac27c8e7fa66a09dbf2c0c61"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeb6486b9ac27c8e7fa66a09dbf2c0c61"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#aeb6486b9ac27c8e7fa66a09dbf2c0c61">try_get</a> (<a class="el" href="a00054.html">dependency_msg</a>&lt; T, Factory &gt; &amp;)</td></tr>
-<tr class="memdesc:aeb6486b9ac27c8e7fa66a09dbf2c0c61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request an item from the sender. <br/></td></tr>
-<tr class="separator:aeb6486b9ac27c8e7fa66a09dbf2c0c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a92a086f82fcd73e1a0df2834bd0784"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2a92a086f82fcd73e1a0df2834bd0784"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#a2a92a086f82fcd73e1a0df2834bd0784">try_reserve</a> (<a class="el" href="a00054.html">dependency_msg</a>&lt; T, Factory &gt; &amp;)</td></tr>
-<tr class="memdesc:a2a92a086f82fcd73e1a0df2834bd0784"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reserves an item in the sender. <br/></td></tr>
-<tr class="separator:a2a92a086f82fcd73e1a0df2834bd0784"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0172dfade96faa57e710669638355616"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0172dfade96faa57e710669638355616"></a>
-ordinary_sender &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ordinary_sender</b> ()</td></tr>
-<tr class="separator:a0172dfade96faa57e710669638355616"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55e8bab39488da80a7cf80c1260f312a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a55e8bab39488da80a7cf80c1260f312a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_host_successors</b> ()</td></tr>
-<tr class="separator:a55e8bab39488da80a7cf80c1260f312a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad30fc1ffa0a2b8134e177e02c5821d7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad30fc1ffa0a2b8134e177e02c5821d7f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#ad30fc1ffa0a2b8134e177e02c5821d7f">spin_rw_mutex_v3</a> ()</td></tr>
+<tr class="memdesc:ad30fc1ffa0a2b8134e177e02c5821d7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct unacquired mutex. <br/></td></tr>
+<tr class="separator:ad30fc1ffa0a2b8134e177e02c5821d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc7cf2e4b14d3a2a591a3552d74ba99d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acc7cf2e4b14d3a2a591a3552d74ba99d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#acc7cf2e4b14d3a2a591a3552d74ba99d">~spin_rw_mutex_v3</a> ()</td></tr>
+<tr class="memdesc:acc7cf2e4b14d3a2a591a3552d74ba99d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor asserts if the mutex is acquired, i.e. state is zero. <br/></td></tr>
+<tr class="separator:acc7cf2e4b14d3a2a591a3552d74ba99d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51e207646300a4c242bb4aaa4e04e9b8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a51e207646300a4c242bb4aaa4e04e9b8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#a51e207646300a4c242bb4aaa4e04e9b8">lock</a> ()</td></tr>
+<tr class="memdesc:a51e207646300a4c242bb4aaa4e04e9b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Acquire writer lock. <br/></td></tr>
+<tr class="separator:a51e207646300a4c242bb4aaa4e04e9b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6ec20b1ec43a49c8c2908984e35b5e8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#ab6ec20b1ec43a49c8c2908984e35b5e8">try_lock</a> ()</td></tr>
+<tr class="memdesc:ab6ec20b1ec43a49c8c2908984e35b5e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try acquiring writer lock (non-blocking)  <a href="#ab6ec20b1ec43a49c8c2908984e35b5e8">More...</a><br/></td></tr>
+<tr class="separator:ab6ec20b1ec43a49c8c2908984e35b5e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04321ed2cdf12ac5825c54591028fc0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab04321ed2cdf12ac5825c54591028fc0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#ab04321ed2cdf12ac5825c54591028fc0">unlock</a> ()</td></tr>
+<tr class="memdesc:ab04321ed2cdf12ac5825c54591028fc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release lock. <br/></td></tr>
+<tr class="separator:ab04321ed2cdf12ac5825c54591028fc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0e3bb644e9021d0f80ee36b03f228e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa0e3bb644e9021d0f80ee36b03f228e4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#aa0e3bb644e9021d0f80ee36b03f228e4">lock_read</a> ()</td></tr>
+<tr class="memdesc:aa0e3bb644e9021d0f80ee36b03f228e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Acquire reader lock. <br/></td></tr>
+<tr class="separator:aa0e3bb644e9021d0f80ee36b03f228e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac932f65b0b66320688e7957ce9c3e2c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#ac932f65b0b66320688e7957ce9c3e2c1">try_lock_read</a> ()</td></tr>
+<tr class="memdesc:ac932f65b0b66320688e7957ce9c3e2c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try acquiring reader lock (non-blocking)  <a href="#ac932f65b0b66320688e7957ce9c3e2c1">More...</a><br/></td></tr>
+<tr class="separator:ac932f65b0b66320688e7957ce9c3e2c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:addc8223faacc1bb2cc8626b609ab2c49"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="addc8223faacc1bb2cc8626b609ab2c49"></a>
+static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_rw_mutex</b> = true</td></tr>
+<tr class="separator:addc8223faacc1bb2cc8626b609ab2c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f6aa8fe3e9c7c4ee4cdec6d221ffe45"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f6aa8fe3e9c7c4ee4cdec6d221ffe45"></a>
+static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_recursive_mutex</b> = false</td></tr>
+<tr class="separator:a7f6aa8fe3e9c7c4ee4cdec6d221ffe45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affd403f6e3822589e985a2c23505fbd1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affd403f6e3822589e985a2c23505fbd1"></a>
+static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_fair_mutex</b> = false</td></tr>
+<tr class="separator:affd403f6e3822589e985a2c23505fbd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a27adc7d791dfaa4a60638313b9d1c1f4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a27adc7d791dfaa4a60638313b9d1c1f4"></a>
+typedef intptr_t&#160;</td><td class="memItemRight" valign="bottom"><b>state_t</b></td></tr>
+<tr class="separator:a27adc7d791dfaa4a60638313b9d1c1f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:aa28625051072472ccd8a2b19405d6fb3"><td class="memItemLeft" align="right" valign="top">state_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="a00144.html#aa28625051072472ccd8a2b19405d6fb3">state</a></td></tr>
+<tr class="memdesc:aa28625051072472ccd8a2b19405d6fb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of lock.  <a href="#aa28625051072472ccd8a2b19405d6fb3">More...</a><br/></td></tr>
+<tr class="separator:aa28625051072472ccd8a2b19405d6fb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-attribs"></a>
+Static Protected Attributes</h2></td></tr>
+<tr class="memitem:aaeec59dde09fe92be196ecddb480777b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaeec59dde09fe92be196ecddb480777b"></a>
+static const state_t&#160;</td><td class="memItemRight" valign="bottom"><b>WRITER</b> = 1</td></tr>
+<tr class="separator:aaeec59dde09fe92be196ecddb480777b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b321914828e5e21baf24d58f32c66d5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b321914828e5e21baf24d58f32c66d5"></a>
+static const state_t&#160;</td><td class="memItemRight" valign="bottom"><b>WRITER_PENDING</b> = 2</td></tr>
+<tr class="separator:a5b321914828e5e21baf24d58f32c66d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cc93cdcf4ad43f6bf8b0f76cde66f9e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6cc93cdcf4ad43f6bf8b0f76cde66f9e"></a>
+static const state_t&#160;</td><td class="memItemRight" valign="bottom"><b>READERS</b> = ~(WRITER | WRITER_PENDING)</td></tr>
+<tr class="separator:a6cc93cdcf4ad43f6bf8b0f76cde66f9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1386a2fa5979432e4a58b94e68db23f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1386a2fa5979432e4a58b94e68db23f"></a>
+static const state_t&#160;</td><td class="memItemRight" valign="bottom"><b>ONE_READER</b> = 4</td></tr>
+<tr class="separator:af1386a2fa5979432e4a58b94e68db23f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a811c72bd7e5ad6a3a9161ee05e298c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a811c72bd7e5ad6a3a9161ee05e298c"></a>
+static const state_t&#160;</td><td class="memItemRight" valign="bottom"><b>BUSY</b> = WRITER | READERS</td></tr>
+<tr class="separator:a6a811c72bd7e5ad6a3a9161ee05e298c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Fast, unfair, spinning reader-writer lock with backoff and writer-preference. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ab6ec20b1ec43a49c8c2908984e35b5e8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tbb::spin_rw_mutex_v3::try_lock </td>
+          <td>(</td>
+          <td class="paramname">)</td><td></td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Try acquiring writer lock (non-blocking) </p>
+<p>Return true if lock acquired; false otherwise. </p>
+
+</div>
+</div>
+<a class="anchor" id="ac932f65b0b66320688e7957ce9c3e2c1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tbb::spin_rw_mutex_v3::try_lock_read </td>
+          <td>(</td>
+          <td class="paramname">)</td><td></td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Try acquiring reader lock (non-blocking) </p>
+<p>Return true if reader lock acquired; false otherwise. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="aa28625051072472ccd8a2b19405d6fb3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">state_t tbb::spin_rw_mutex_v3::state</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>State of lock. </p>
+<p>Bit 0 = writer is holding lock Bit 1 = request by a writer to acquire lock (hint to readers to wait) Bit 2..N = number of readers holding lock </p>
+
+<p>Referenced by <a class="el" href="a00139.html#a99e279a995a51abfb87b865e886949f8">tbb::spin_rw_mutex_v3::scoped_lock::release()</a>, and <a class="el" href="a00144.html#ab04321ed2cdf12ac5825c54591028fc0">unlock()</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>flow_graph_opencl_node.h</li>
+<li>spin_rw_mutex.h</li>
 </ul>
 </div><!-- contents -->
 <hr>
 <p></p>
-Copyright &copy; 2005-2016 Intel Corporation.  All Rights Reserved.
+Copyright &copy; 2005-2017 Intel Corporation.  All Rights Reserved.
 <p></p>
 Intel, Pentium, Intel Xeon, Itanium, Intel XScale and VTune are
 registered trademarks or trademarks of Intel Corporation or its

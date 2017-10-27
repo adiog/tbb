@@ -1,21 +1,21 @@
 /*
-    Copyright 2005-2016 Intel Corporation.  All Rights Reserved.
+    Copyright (c) 2005-2017 Intel Corporation
 
-    This file is part of Threading Building Blocks. Threading Building Blocks is free software;
-    you can redistribute it and/or modify it under the terms of the GNU General Public License
-    version 2  as  published  by  the  Free Software Foundation.  Threading Building Blocks is
-    distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See  the GNU General Public License for more details.   You should have received a copy of
-    the  GNU General Public License along with Threading Building Blocks; if not, write to the
-    Free Software Foundation, Inc.,  51 Franklin St,  Fifth Floor,  Boston,  MA 02110-1301 USA
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    As a special exception,  you may use this file  as part of a free software library without
-    restriction.  Specifically,  if other files instantiate templates  or use macros or inline
-    functions from this file, or you compile this file and link it with other files to produce
-    an executable,  this file does not by itself cause the resulting executable to be covered
-    by the GNU General Public License. This exception does not however invalidate any other
-    reasons why the executable file might be covered by the GNU General Public License.
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+
+
 */
 
 #ifndef __TBB__flow_graph_node_impl_H
@@ -37,8 +37,20 @@ namespace internal {
      template< typename T, typename A >
      class function_input_queue : public item_buffer<T,A> {
      public:
+         bool empty() const {
+             return this->buffer_empty();
+         }
+
+         const T& front() const {
+             return this->item_buffer<T, A>::front();
+         }
+
          bool pop( T& t ) {
              return this->pop_front( t );
+         }
+
+         void pop() {
+             this->destroy_front();
          }
 
          bool push( T& t ) {
@@ -51,7 +63,6 @@ namespace internal {
     //  call and any handling of the result.
     template< typename Input, typename A, typename ImplType >
     class function_input_base : public receiver<Input>, tbb::internal::no_assign {
-        enum op_stat {WAIT=0, SUCCEEDED, FAILED};
         enum op_type {reg_pred, rem_pred, app_body, try_fwd, tryput_bypass, app_body_bypass
 #if TBB_PREVIEW_FLOW_GRAPH_FEATURES
             , add_blt_pred, del_blt_pred,
@@ -76,7 +87,7 @@ namespace internal {
 
         //! Constructor for function_input_base
         function_input_base( graph &g, size_t max_concurrency, input_queue_type *q = NULL)
-            : my_graph(g), my_max_concurrency(max_concurrency), my_concurrency(0),
+            : my_graph_ref(g), my_max_concurrency(max_concurrency), my_concurrency(0),
               my_queue(q), forwarder_busy(false) {
             my_predecessors.set_owner(this);
             my_aggregator.initialize_handler(handler_type(this));
@@ -85,7 +96,7 @@ namespace internal {
         //! Copy constructor
         function_input_base( const function_input_base& src, input_queue_type *q = NULL) :
             receiver<Input>(), tbb::internal::no_assign(),
-            my_graph(src.my_graph), my_max_concurrency(src.my_max_concurrency),
+            my_graph_ref(src.my_graph_ref), my_max_concurrency(src.my_max_concurrency),
             my_concurrency(0), my_queue(q), forwarder_busy(false)
         {
             my_predecessors.set_owner(this);
@@ -101,13 +112,13 @@ namespace internal {
         }
 
         //! Put to the node, returning a task if available
-        virtual task * try_put_task( const input_type &t ) {
+        task * try_put_task( const input_type &t ) __TBB_override {
            if ( my_max_concurrency == 0 ) {
                return create_body_task( t );
            } else {
                operation_type op_data(t, tryput_bypass);
                my_aggregator.execute(&op_data);
-               if(op_data.status == SUCCEEDED ) {
+               if(op_data.status == internal::SUCCEEDED) {
                    return op_data.bypass_t;
                }
                return NULL;
@@ -115,7 +126,7 @@ namespace internal {
         }
 
         //! Adds src to the list of cached predecessors.
-        /* override */ bool register_predecessor( predecessor_type &src ) {
+        bool register_predecessor( predecessor_type &src ) __TBB_override {
             operation_type op_data(reg_pred);
             op_data.r = &src;
             my_aggregator.execute(&op_data);
@@ -123,7 +134,7 @@ namespace internal {
         }
 
         //! Removes src from the list of cached predecessors.
-        /* override */ bool remove_predecessor( predecessor_type &src ) {
+        bool remove_predecessor( predecessor_type &src ) __TBB_override {
             operation_type op_data(rem_pred);
             op_data.r = &src;
             my_aggregator.execute(&op_data);
@@ -132,32 +143,32 @@ namespace internal {
 
 #if TBB_PREVIEW_FLOW_GRAPH_FEATURES
         //! Adds to list of predecessors added by make_edge
-        /*override*/ void internal_add_built_predecessor( predecessor_type &src) {
+        void internal_add_built_predecessor( predecessor_type &src) __TBB_override {
             operation_type op_data(add_blt_pred);
             op_data.r = &src;
             my_aggregator.execute(&op_data);
         }
 
         //! removes from to list of predecessors (used by remove_edge)
-        /*override*/ void internal_delete_built_predecessor( predecessor_type &src) {
+        void internal_delete_built_predecessor( predecessor_type &src) __TBB_override {
             operation_type op_data(del_blt_pred);
             op_data.r = &src;
             my_aggregator.execute(&op_data);
         }
 
-        /*override*/ size_t predecessor_count() {
+        size_t predecessor_count() __TBB_override {
             operation_type op_data(blt_pred_cnt);
             my_aggregator.execute(&op_data);
             return op_data.cnt_val;
         }
 
-        /*override*/ void copy_predecessors(predecessor_list_type &v) {
+        void copy_predecessors(predecessor_list_type &v) __TBB_override {
             operation_type op_data(blt_pred_cpy);
             op_data.predv = &v;
             my_aggregator.execute(&op_data);
         }
 
-        /*override*/built_predecessors_type &built_predecessors() {
+        built_predecessors_type &built_predecessors() __TBB_override {
             return my_predecessors.built_predecessors();
         }
 #endif  /* TBB_PREVIEW_FLOW_GRAPH_FEATURES */
@@ -173,17 +184,21 @@ namespace internal {
             forwarder_busy = false;
         }
 
-        graph& my_graph;
+        graph& my_graph_ref;
         const size_t my_max_concurrency;
         size_t my_concurrency;
         input_queue_type *my_queue;
         predecessor_cache<input_type, null_mutex > my_predecessors;
 
-        /*override*/void reset_receiver( reset_flags f) {
+        void reset_receiver( reset_flags f) __TBB_override {
             if( f & rf_clear_edges) my_predecessors.clear();
             else
                 my_predecessors.reset();
             __TBB_ASSERT(!(f & rf_clear_edges) || my_predecessors.empty(), "function_input_base reset failed");
+        }
+
+        graph& graph_reference() __TBB_override {
+            return my_graph_ref;
         }
 
     private:
@@ -213,6 +228,32 @@ namespace internal {
         friend class internal::aggregating_functor<class_type, operation_type>;
         aggregator< handler_type, operation_type > my_aggregator;
 
+        task* create_and_spawn_task(bool spawn) {
+            task* new_task = NULL;
+            if(my_queue) {
+                if(!my_queue->empty()) {
+                    ++my_concurrency;
+                    new_task = create_body_task(my_queue->front());
+
+                    my_queue->pop();
+                }
+            }
+            else {
+                input_type i;
+                if(my_predecessors.get_item(i)) {
+                    ++my_concurrency;
+                    new_task = create_body_task(i);
+                }
+            }
+            //! Spawns a task that applies a body
+            // task == NULL => g.reset(), which shouldn't occur in concurrent context
+            if(spawn && new_task) {
+                internal::spawn_in_graph_arena(graph_reference(), *new_task);
+                new_task = SUCCESSFULLY_ENQUEUED;
+            }
+
+            return new_task;
+        }
         void handle_operations(operation_type *op_list) {
             operation_type *tmp;
             while (op_list) {
@@ -236,35 +277,16 @@ namespace internal {
                     --my_concurrency;
                     __TBB_store_with_release(tmp->status, SUCCEEDED);
                     if (my_concurrency<my_max_concurrency) {
-                        input_type i;
-                        bool item_was_retrieved = false;
-                        if ( my_queue )
-                            item_was_retrieved = my_queue->pop(i);
-                        else
-                            item_was_retrieved = my_predecessors.get_item(i);
-                        if (item_was_retrieved) {
-                            ++my_concurrency;
-                            spawn_body_task(i);
-                        }
+                        create_and_spawn_task(/*spawn=*/true);
                     }
                     break;
                 case app_body_bypass: {
-                        task * new_task = NULL;
+                        tmp->bypass_t = NULL;
                         __TBB_ASSERT(my_max_concurrency != 0, NULL);
                         --my_concurrency;
-                        if (my_concurrency<my_max_concurrency) {
-                            input_type i;
-                            bool item_was_retrieved = false;
-                            if ( my_queue )
-                                item_was_retrieved = my_queue->pop(i);
-                            else
-                                item_was_retrieved = my_predecessors.get_item(i);
-                            if (item_was_retrieved) {
-                                ++my_concurrency;
-                                new_task = create_body_task(i);
-                            }
-                        }
-                        tmp->bypass_t = new_task;
+                        if(my_concurrency<my_max_concurrency)
+                            tmp->bypass_t = create_and_spawn_task(/*spawn=*/false);
+
                         __TBB_store_with_release(tmp->status, SUCCEEDED);
                     }
                     break;
@@ -313,22 +335,14 @@ namespace internal {
         //! Tries to spawn bodies if available and if concurrency allows
         void internal_forward(operation_type *op) {
             op->bypass_t = NULL;
-            if (my_concurrency<my_max_concurrency || !my_max_concurrency) {
-                input_type i;
-                bool item_was_retrieved = false;
-                if ( my_queue )
-                    item_was_retrieved = my_queue->pop(i);
-                else
-                    item_was_retrieved = my_predecessors.get_item(i);
-                if (item_was_retrieved) {
-                    ++my_concurrency;
-                    op->bypass_t = create_body_task(i);
-                    __TBB_store_with_release(op->status, SUCCEEDED);
-                    return;
-                }
+            if (my_concurrency < my_max_concurrency || !my_max_concurrency)
+                op->bypass_t = create_and_spawn_task(/*spawn=*/false);
+            if(op->bypass_t)
+                __TBB_store_with_release(op->status, SUCCEEDED);
+            else {
+                forwarder_busy = false;
+                __TBB_store_with_release(op->status, FAILED);
             }
-            __TBB_store_with_release(op->status, FAILED);
-            forwarder_busy = false;
         }
 
         //! Applies the body to the provided input
@@ -338,8 +352,9 @@ namespace internal {
             if ( my_max_concurrency != 0 ) {
                 operation_type op_data(app_body_bypass);  // tries to pop an item or get_item, enqueues another apply_body
                 my_aggregator.execute(&op_data);
+                // workaround for icc bug
                 tbb::task *ttask = op_data.bypass_t;
-                new_task = combine_tasks(new_task, ttask);
+                new_task = combine_tasks(my_graph_ref, new_task, ttask);
             }
             return new_task;
         }
@@ -347,20 +362,11 @@ namespace internal {
         //! allocates a task to apply a body
         inline task * create_body_task( const input_type &input ) {
 
-            return (my_graph.is_active()) ?
-                new(task::allocate_additional_child_of(*(my_graph.root_task())))
+            return (internal::is_graph_active(my_graph_ref)) ?
+                new(task::allocate_additional_child_of(*(my_graph_ref.root_task())))
                     apply_body_task_bypass < class_type, input_type >(*this, input) :
                 NULL;
         }
-
-       //! Spawns a task that applies a body
-       inline void spawn_body_task( const input_type &input ) {
-           task* tp = create_body_task(input);
-           // tp == NULL => g.reset(), which shouldn't occur in concurrent context
-           if(tp) {
-               FLOW_SPAWN(*tp);
-           }
-       }
 
        //! This is executed by an enqueued task, the "forwarder"
        task *forward_task() {
@@ -370,16 +376,17 @@ namespace internal {
                op_data.status = WAIT;
                my_aggregator.execute(&op_data);
                if(op_data.status == SUCCEEDED) {
+                    // workaround for icc bug
                    tbb::task *ttask = op_data.bypass_t;
-                   rval = combine_tasks(rval, ttask);
+                   rval = combine_tasks(my_graph_ref, rval, ttask);
                }
            } while (op_data.status == SUCCEEDED);
            return rval;
        }
 
        inline task *create_forward_task() {
-           return (my_graph.is_active()) ?
-               new(task::allocate_additional_child_of(*(my_graph.root_task()))) forward_task_bypass< class_type >(*this) :
+           return (internal::is_graph_active(my_graph_ref)) ?
+               new(task::allocate_additional_child_of(*(my_graph_ref.root_task()))) forward_task_bypass< class_type >(*this) :
                NULL;
        }
 
@@ -387,7 +394,7 @@ namespace internal {
        inline void spawn_forward_task() {
            task* tp = create_forward_task();
            if(tp) {
-               FLOW_SPAWN(*tp);
+               internal::spawn_in_graph_arena(graph_reference(), *tp);
            }
        }
     };  // function_input_base
@@ -540,7 +547,7 @@ namespace internal {
         template< typename Body >
         Body copy_function_object() {
             multifunction_body_type &body_ref = *this->my_body;
-            return dynamic_cast< internal::multifunction_body_leaf<input_type, output_ports_type, Body> & >(body_ref).get_body();
+            return *static_cast<Body*>(dynamic_cast< internal::multifunction_body_leaf<input_type, output_ports_type, Body> & >(body_ref).get_body_ptr());
         }
 
         // for multifunction nodes we do not have a single successor as such.  So we just tell
@@ -557,12 +564,12 @@ namespace internal {
 
     protected:
 #if TBB_PREVIEW_FLOW_GRAPH_FEATURES
-        /*override*/void extract() {
+        void extract() {
             extract_element<N>::extract_this(my_output_ports);
         }
 #endif
 
-        /*override*/void reset(reset_flags f) {
+        void reset(reset_flags f) {
             base_type::reset_function_input_base(f);
             if(f & rf_clear_edges)clear_element<N>::clear_this(my_output_ports);
             if(f & rf_reset_bodies) {
@@ -585,21 +592,31 @@ namespace internal {
         return tbb::flow::get<N>(op.output_ports());
     }
 
-// helper structs for split_node
+    inline void check_task_and_spawn(graph& g, task* t) {
+        if (t && t != SUCCESSFULLY_ENQUEUED) {
+            internal::spawn_in_graph_arena(g, *t);
+        }
+    }
+
+    // helper structs for split_node
     template<int N>
     struct emit_element {
         template<typename T, typename P>
-        static void emit_this(const T &t, P &p) {
-            (void)tbb::flow::get<N-1>(p).try_put(tbb::flow::get<N-1>(t));
-            emit_element<N-1>::emit_this(t,p);
+        static task* emit_this(graph& g, const T &t, P &p) {
+            // TODO: consider to collect all the tasks in task_list and spawn them all at once
+            task* last_task = tbb::flow::get<N-1>(p).try_put_task(tbb::flow::get<N-1>(t));
+            check_task_and_spawn(g, last_task);
+            return emit_element<N-1>::emit_this(g,t,p);
         }
     };
 
     template<>
     struct emit_element<1> {
         template<typename T, typename P>
-        static void emit_this(const T &t, P &p) {
-            (void)tbb::flow::get<0>(p).try_put(tbb::flow::get<0>(t));
+        static task* emit_this(graph& g, const T &t, P &p) {
+            task* last_task = tbb::flow::get<0>(p).try_put_task(tbb::flow::get<0>(t));
+            check_task_and_spawn(g, last_task);
+            return SUCCESSFULLY_ENQUEUED;
         }
     };
 
@@ -617,19 +634,19 @@ namespace internal {
 
         template< typename Body >
         continue_input( graph &g, Body& body )
-            : my_graph_ptr(&g),
+            : my_graph_ref(g),
              my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ),
              my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ) { }
 
         template< typename Body >
         continue_input( graph &g, int number_of_predecessors, Body& body )
-            : continue_receiver( number_of_predecessors ), my_graph_ptr(&g),
+            : continue_receiver( number_of_predecessors ), my_graph_ref(g),
              my_body( new internal::function_body_leaf< input_type, output_type, Body>(body) ),
              my_init_body( new internal::function_body_leaf< input_type, output_type, Body>(body) )
         { }
 
         continue_input( const continue_input& src ) : continue_receiver(src),
-            my_graph_ptr(src.my_graph_ptr),
+            my_graph_ref(src.my_graph_ref),
             my_body( src.my_init_body->clone() ),
             my_init_body( src.my_init_body->clone() ) {}
 
@@ -644,7 +661,7 @@ namespace internal {
             return dynamic_cast< internal::function_body_leaf<input_type, output_type, Body> & >(body_ref).get_body();
         }
 
-        /*override*/void reset_receiver( reset_flags f) {
+        void reset_receiver( reset_flags f) __TBB_override {
             continue_receiver::reset_receiver(f);
             if(f & rf_reset_bodies) {
                 function_body_type *tmp = my_init_body->clone();
@@ -655,7 +672,7 @@ namespace internal {
 
     protected:
 
-        graph* my_graph_ptr;
+        graph& my_graph_ref;
         function_body_type *my_body;
         function_body_type *my_init_body;
 
@@ -678,11 +695,15 @@ namespace internal {
         }
 
         //! Spawns a task that applies the body
-        /* override */ task *execute( ) {
-            return (my_graph_ptr->is_active()) ?
-                new ( task::allocate_additional_child_of( *(my_graph_ptr->root_task()) ) )
+        task *execute( ) __TBB_override {
+            return (internal::is_graph_active(my_graph_ref)) ?
+                new ( task::allocate_additional_child_of( *(my_graph_ref.root_task()) ) )
                     apply_body_task_bypass< continue_input< Output >, continue_msg >( *this, continue_msg() ) :
                 NULL;
+        }
+
+        graph& graph_reference() __TBB_override {
+            return my_graph_ref;
         }
 
     };  // continue_input
@@ -707,34 +728,34 @@ namespace internal {
         }
 
         //! Adds a new successor to this node
-        /* override */ bool register_successor( successor_type &r ) {
+        bool register_successor( successor_type &r ) __TBB_override {
             successors().register_successor( r );
             return true;
         }
 
         //! Removes a successor from this node
-        /* override */ bool remove_successor( successor_type &r ) {
+        bool remove_successor( successor_type &r ) __TBB_override {
             successors().remove_successor( r );
             return true;
         }
 
 #if TBB_PREVIEW_FLOW_GRAPH_FEATURES
-        built_successors_type &built_successors() { return successors().built_successors(); }
+        built_successors_type &built_successors() __TBB_override { return successors().built_successors(); }
 
 
-        /*override*/ void internal_add_built_successor( successor_type &r) {
+        void internal_add_built_successor( successor_type &r) __TBB_override {
             successors().internal_add_built_successor( r );
         }
 
-        /*override*/ void internal_delete_built_successor( successor_type &r) {
+        void internal_delete_built_successor( successor_type &r) __TBB_override {
             successors().internal_delete_built_successor( r );
         }
 
-        /*override*/ size_t successor_count() {
+        size_t successor_count() __TBB_override {
             return successors().successor_count();
         }
 
-        /*override*/ void  copy_successors( successor_list_type &v) {
+        void  copy_successors( successor_list_type &v) __TBB_override {
             successors().copy_successors(v);
         }
 #endif  /* TBB_PREVIEW_FLOW_GRAPH_FEATURES */
@@ -747,7 +768,9 @@ namespace internal {
         //
         // if task pointer is returned will always spawn and return true, else
         // return value will be bool returned from successors.try_put.
-        task *try_put_task(const output_type &i) { return my_successors.try_put_task(i); }
+        task *try_put_task(const output_type &i) { // not a virtual method in this class
+            return my_successors.try_put_task(i);
+        }
 
         broadcast_cache_type &successors() { return my_successors; }
     protected:
@@ -766,11 +789,22 @@ namespace internal {
         multifunction_output( const multifunction_output &/*other*/) : base_type() { my_successors.set_owner(this); }
 
         bool try_put(const output_type &i) {
-            task *res = my_successors.try_put_task(i);
+            task *res = try_put_task(i);
             if(!res) return false;
-            if(res != SUCCESSFULLY_ENQUEUED) FLOW_SPAWN(*res);
+            if(res != SUCCESSFULLY_ENQUEUED) {
+                FLOW_SPAWN(*res); // TODO: Spawn task inside arena
+            }
             return true;
         }
+
+    protected:
+
+        task* try_put_task(const output_type &i) {
+            return my_successors.try_put_task(i);
+        }
+
+        template <int N> friend struct emit_element;
+
     };  // multifunction_output
 
 //composite_node
